@@ -2,13 +2,31 @@ import 'package:flutter/material.dart';
 import '../game/snake_game.dart';
 import '../game/theme.dart';
 
-class MainMenuOverlay extends StatelessWidget {
+class MainMenuOverlay extends StatefulWidget {
   final SnakeGame game;
 
   const MainMenuOverlay({super.key, required this.game});
 
   @override
+  State<MainMenuOverlay> createState() => _MainMenuOverlayState();
+}
+
+class _MainMenuOverlayState extends State<MainMenuOverlay> {
+  GameTheme _selectedTheme = GameTheme.neonGreen;
+
+  void _changeTheme(GameTheme theme) {
+    setState(() {
+      _selectedTheme = theme;
+      CyberpunkTheme.setTheme(theme);
+      // Force rebuild of the game to apply theme
+      widget.game.refreshTheme();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final currentThemeData = CyberpunkTheme.current;
+
     return Center(
       child: Container(
         padding: const EdgeInsets.all(20),
@@ -19,11 +37,8 @@ class MainMenuOverlay extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ShaderMask(
-              shaderCallback: (bounds) => const LinearGradient(
-                colors: [
-                  Color(0xFF4ADE80),
-                  Color(0xFF166534),
-                ], // green-400 to green-800
+              shaderCallback: (bounds) => LinearGradient(
+                colors: currentThemeData.titleGradient,
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ).createShader(bounds),
@@ -33,10 +48,7 @@ class MainMenuOverlay extends StatelessWidget {
                   fontSize: 36,
                   color: Colors.white, // Required for ShaderMask
                   shadows: [
-                    const Shadow(
-                      blurRadius: 10,
-                      color: CyberpunkTheme.neonGreen,
-                    ),
+                    Shadow(blurRadius: 10, color: CyberpunkTheme.primary),
                   ],
                 ),
               ),
@@ -45,11 +57,11 @@ class MainMenuOverlay extends StatelessWidget {
             Container(
               height: 1,
               width: 128,
-              decoration: const BoxDecoration(
-                color: Color(0xFF22C55E), // green-500
+              decoration: BoxDecoration(
+                color: CyberpunkTheme.primary,
                 boxShadow: [
                   BoxShadow(
-                    color: CyberpunkTheme.neonGreen,
+                    color: CyberpunkTheme.primary,
                     blurRadius: 10,
                     spreadRadius: 1,
                   ),
@@ -57,13 +69,13 @@ class MainMenuOverlay extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
-            Text(
+            const Text(
               '// OBJECTIVE: CONSUME DATA PACKETS\n'
               '// AVOID: SYSTEM WALLS & SELF-INTERSECTION\n'
               '// CONTROLS: ARROWS / SWIPE',
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontFamily: 'Courier', // Monospace font for code look
+              style: TextStyle(
+                fontFamily: 'Courier',
                 color: CyberpunkTheme.textGray,
                 fontSize: 12,
                 height: 1.5,
@@ -71,11 +83,35 @@ class MainMenuOverlay extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
+
+            // Theme Selection Section
+            Text(
+              'SELECT THEME',
+              style: CyberpunkTheme.pressStart2P.copyWith(
+                fontSize: 12,
+                color: CyberpunkTheme.textGray,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
+              children: [
+                _buildThemeButton(GameTheme.neonGreen, GameThemeData.neonGreen),
+                _buildThemeButton(GameTheme.synthwave, GameThemeData.synthwave),
+                _buildThemeButton(GameTheme.oceanBlue, GameThemeData.oceanBlue),
+                _buildThemeButton(GameTheme.fireRed, GameThemeData.fireRed),
+              ],
+            ),
+            const SizedBox(height: 32),
+
+            // Start Button
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
                 onTap: () {
-                  game.startGame();
+                  widget.game.startGame();
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -83,13 +119,11 @@ class MainMenuOverlay extends StatelessWidget {
                     vertical: 16,
                   ),
                   decoration: BoxDecoration(
-                    color: CyberpunkTheme.neonGreen.withOpacity(0.1),
-                    border: Border.all(
-                      color: const Color(0xFF22C55E),
-                    ), // green-500
+                    color: CyberpunkTheme.primary.withOpacity(0.1),
+                    border: Border.all(color: CyberpunkTheme.primary),
                     boxShadow: [
                       BoxShadow(
-                        color: CyberpunkTheme.neonGreen.withOpacity(0.3),
+                        color: CyberpunkTheme.primary.withOpacity(0.3),
                         blurRadius: 15,
                       ),
                     ],
@@ -97,7 +131,7 @@ class MainMenuOverlay extends StatelessWidget {
                   child: Text(
                     'INITIALIZE SYSTEM',
                     style: CyberpunkTheme.pressStart2P.copyWith(
-                      color: const Color(0xFF4ADE80), // green-400
+                      color: CyberpunkTheme.primary,
                       fontSize: 14,
                       letterSpacing: 2,
                     ),
@@ -106,6 +140,81 @@ class MainMenuOverlay extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeButton(GameTheme theme, GameThemeData themeData) {
+    final isSelected = _selectedTheme == theme;
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => _changeTheme(theme),
+        child: Container(
+          width: 140,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? themeData.primary.withOpacity(0.2)
+                : Colors.black.withOpacity(0.5),
+            border: Border.all(
+              color: isSelected
+                  ? themeData.primary
+                  : themeData.primary.withOpacity(0.3),
+              width: isSelected ? 2 : 1,
+            ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: themeData.primary.withOpacity(0.5),
+                      blurRadius: 10,
+                    ),
+                  ]
+                : null,
+          ),
+          child: Column(
+            children: [
+              Text(
+                themeData.name,
+                style: CyberpunkTheme.pressStart2P.copyWith(
+                  fontSize: 8,
+                  color: isSelected
+                      ? themeData.primary
+                      : CyberpunkTheme.textGray,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 16,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: themeData.primary,
+                      boxShadow: [
+                        BoxShadow(color: themeData.primary, blurRadius: 5),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Container(
+                    width: 16,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: themeData.secondary,
+                      boxShadow: [
+                        BoxShadow(color: themeData.secondary, blurRadius: 5),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -54,6 +54,15 @@ class SnakeGame extends FlameGame with KeyboardEvents {
     startGame();
   }
 
+  void refreshTheme() {
+    // Force rebuild of overlays when theme changes
+    final activeOverlays = overlays.activeOverlays.toList();
+    for (final overlay in activeOverlays) {
+      overlays.remove(overlay);
+      overlays.add(overlay);
+    }
+  }
+
   void resetGameState() {
     snake.reset();
     food.respawn(size, gridSize);
