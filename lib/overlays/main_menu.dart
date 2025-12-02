@@ -33,113 +33,124 @@ class _MainMenuOverlayState extends State<MainMenuOverlay> {
         width: double.infinity,
         height: double.infinity,
         color: Colors.black.withOpacity(0.85),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ShaderMask(
-              shaderCallback: (bounds) => LinearGradient(
-                colors: currentThemeData.titleGradient,
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ).createShader(bounds),
-              child: Text(
-                'NEON SNAKE',
-                style: CyberpunkTheme.pressStart2P.copyWith(
-                  fontSize: 36,
-                  color: Colors.white, // Required for ShaderMask
-                  shadows: [
-                    Shadow(blurRadius: 10, color: CyberpunkTheme.primary),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ShaderMask(
+                shaderCallback: (bounds) => LinearGradient(
+                  colors: currentThemeData.titleGradient,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ).createShader(bounds),
+                child: Text(
+                  'NEON SNAKE',
+                  style: CyberpunkTheme.pressStart2P.copyWith(
+                    fontSize: 36,
+                    color: Colors.white, // Required for ShaderMask
+                    shadows: [
+                      Shadow(blurRadius: 10, color: CyberpunkTheme.primary),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 1,
+                width: 128,
+                decoration: BoxDecoration(
+                  color: CyberpunkTheme.primary,
+                  boxShadow: [
+                    BoxShadow(
+                      color: CyberpunkTheme.primary,
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              height: 1,
-              width: 128,
-              decoration: BoxDecoration(
-                color: CyberpunkTheme.primary,
-                boxShadow: [
-                  BoxShadow(
-                    color: CyberpunkTheme.primary,
-                    blurRadius: 10,
-                    spreadRadius: 1,
+              const SizedBox(height: 32),
+              const Text(
+                '// OBJECTIVE: CONSUME DATA PACKETS\n'
+                '// AVOID: SYSTEM WALLS & SELF-INTERSECTION\n'
+                '// CONTROLS: ARROWS / SWIPE',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Courier',
+                  color: CyberpunkTheme.textGray,
+                  fontSize: 12,
+                  height: 1.5,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              // Theme Selection Section
+              Text(
+                'SELECT THEME',
+                style: CyberpunkTheme.pressStart2P.copyWith(
+                  fontSize: 12,
+                  color: CyberpunkTheme.textGray,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                alignment: WrapAlignment.center,
+                children: [
+                  _buildThemeButton(
+                    GameTheme.neonGreen,
+                    GameThemeData.neonGreen,
                   ),
+                  _buildThemeButton(
+                    GameTheme.synthwave,
+                    GameThemeData.synthwave,
+                  ),
+                  _buildThemeButton(
+                    GameTheme.oceanBlue,
+                    GameThemeData.oceanBlue,
+                  ),
+                  _buildThemeButton(GameTheme.fireRed, GameThemeData.fireRed),
                 ],
               ),
-            ),
-            const SizedBox(height: 32),
-            const Text(
-              '// OBJECTIVE: CONSUME DATA PACKETS\n'
-              '// AVOID: SYSTEM WALLS & SELF-INTERSECTION\n'
-              '// CONTROLS: ARROWS / SWIPE',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Courier',
-                color: CyberpunkTheme.textGray,
-                fontSize: 12,
-                height: 1.5,
-                letterSpacing: 1.2,
-              ),
-            ),
-            const SizedBox(height: 32),
+              const SizedBox(height: 32),
 
-            // Theme Selection Section
-            Text(
-              'SELECT THEME',
-              style: CyberpunkTheme.pressStart2P.copyWith(
-                fontSize: 12,
-                color: CyberpunkTheme.textGray,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              alignment: WrapAlignment.center,
-              children: [
-                _buildThemeButton(GameTheme.neonGreen, GameThemeData.neonGreen),
-                _buildThemeButton(GameTheme.synthwave, GameThemeData.synthwave),
-                _buildThemeButton(GameTheme.oceanBlue, GameThemeData.oceanBlue),
-                _buildThemeButton(GameTheme.fireRed, GameThemeData.fireRed),
-              ],
-            ),
-            const SizedBox(height: 32),
-
-            // Start Button
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  widget.game.startGame();
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    color: CyberpunkTheme.primary.withOpacity(0.1),
-                    border: Border.all(color: CyberpunkTheme.primary),
-                    boxShadow: [
-                      BoxShadow(
-                        color: CyberpunkTheme.primary.withOpacity(0.3),
-                        blurRadius: 15,
+              // Start Button
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () {
+                    widget.game.startGame();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: CyberpunkTheme.primary.withOpacity(0.1),
+                      border: Border.all(color: CyberpunkTheme.primary),
+                      boxShadow: [
+                        BoxShadow(
+                          color: CyberpunkTheme.primary.withOpacity(0.3),
+                          blurRadius: 15,
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      'INITIALIZE SYSTEM',
+                      style: CyberpunkTheme.pressStart2P.copyWith(
+                        color: CyberpunkTheme.primary,
+                        fontSize: 14,
+                        letterSpacing: 2,
                       ),
-                    ],
-                  ),
-                  child: Text(
-                    'INITIALIZE SYSTEM',
-                    style: CyberpunkTheme.pressStart2P.copyWith(
-                      color: CyberpunkTheme.primary,
-                      fontSize: 14,
-                      letterSpacing: 2,
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
