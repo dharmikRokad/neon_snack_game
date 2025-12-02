@@ -32,8 +32,7 @@ class GameOverlay extends StatelessWidget {
         // Controls (Bottom)
         Positioned(
           bottom: 20,
-          left: 0,
-          right: 0,
+          right: 10,
           child: Center(
             child: Opacity(
               opacity: 0.5, // Make it semi-transparent
@@ -49,17 +48,16 @@ class GameOverlay extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.4),
+        color: Colors.black.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(4),
         border: Border.all(
-          color: const Color(0xFF14532D).withOpacity(0.5),
+          color: const Color(0xFF14532D).withValues(alpha: 0.5),
         ), // green-900/50
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: CyberpunkTheme.hudScoreLabel),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Text('$value', style: CyberpunkTheme.hudScoreValue),
         ],
       ),
@@ -97,7 +95,7 @@ class GameOverlay extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
           boxShadow: [
             BoxShadow(
-              color: CyberpunkTheme.neonGreen.withOpacity(0.1),
+              color: CyberpunkTheme.primaryDim.withValues(alpha: 0.1),
               blurRadius: 5,
             ),
           ],
@@ -105,10 +103,7 @@ class GameOverlay extends StatelessWidget {
         child: Center(
           child: Text(
             label,
-            style: const TextStyle(
-              color: Color.fromRGBO(0, 255, 0, 0.7),
-              fontSize: 20,
-            ),
+            style: TextStyle(color: CyberpunkTheme.primary, fontSize: 20),
           ),
         ),
       ),
@@ -150,7 +145,7 @@ class ScanlinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.black.withOpacity(0.2)
+      ..color = Colors.black.withValues(alpha: 0.2)
       ..style = PaintingStyle.fill;
 
     for (double y = 0; y < size.height; y += 4) {

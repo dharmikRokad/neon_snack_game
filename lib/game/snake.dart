@@ -38,7 +38,7 @@ class Snake extends PositionComponent with HasGameRef<SnakeGame> {
       if (isHead || i < 10) {
         // Glow for head and first few segments
         final glowPaint = Paint()
-          ..color = CyberpunkTheme.neonGreen.withOpacity(0.6)
+          ..color = CyberpunkTheme.neonGreen.withValues(alpha: 0.6)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
 
         canvas.drawRect(

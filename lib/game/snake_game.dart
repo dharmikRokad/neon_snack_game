@@ -3,6 +3,7 @@ import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:snake_game_flame/game/grid_background.dart';
 import 'snake.dart';
 import 'food.dart';
 import 'theme.dart';
@@ -148,25 +149,5 @@ class SnakeGame extends FlameGame with KeyboardEvents {
       }
     }
     return KeyEventResult.handled;
-  }
-}
-
-class GridBackground extends Component with HasGameRef<SnakeGame> {
-  @override
-  void render(Canvas canvas) {
-    final paint = Paint()
-      ..color = CyberpunkTheme.gridLine
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke;
-
-    // Draw Vertical Lines
-    for (double x = 0; x <= gameRef.size.x; x += SnakeGame.gridSize) {
-      canvas.drawLine(Offset(x, 0), Offset(x, gameRef.size.y), paint);
-    }
-
-    // Draw Horizontal Lines
-    for (double y = 0; y <= gameRef.size.y; y += SnakeGame.gridSize) {
-      canvas.drawLine(Offset(0, y), Offset(gameRef.size.x, y), paint);
-    }
   }
 }

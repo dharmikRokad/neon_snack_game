@@ -55,19 +55,6 @@ flutter run -d chrome
 flutter build web --release --base-href "/neon_snack_game/"
 ```
 
-### Quick Deploy (GitHub Pages)
-```bash
-# Make deploy script executable (one-time)
-chmod +x deploy.sh
-
-# Deploy to GitHub Pages
-./deploy.sh
-```
-
-Or use the automated GitHub Actions workflow (push to main branch and it auto-deploys).
-
-See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for more deployment options (Firebase, Netlify, Vercel).
-
 ## 🎯 How to Play
 
 1. **Select Your Theme** - Choose your favorite color scheme from the main menu

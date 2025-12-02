@@ -12,7 +12,7 @@ class GameOverOverlay extends StatelessWidget {
     return Center(
       child: Container(
         padding: const EdgeInsets.all(50),
-        color: Colors.black.withOpacity(0.85),
+        color: Colors.black.withValues(alpha: 0.85),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -48,17 +48,17 @@ class GameOverOverlay extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: const Color(
                       0xFF7F1D1D,
-                    ).withOpacity(0.2), // red-900/20
+                    ).withValues(alpha: 0.2), // red-900/20
                     border: Border.all(color: CyberpunkTheme.errorRed),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.red.withOpacity(0.5),
+                        color: Colors.red.withValues(alpha: 0.5),
                         blurRadius: 10,
                       ),
                     ],
                   ),
                   child: Text(
-                    'REBOOT SYSTEM',
+                    'PLAY AGAIN',
                     style: CyberpunkTheme.pressStart2P.copyWith(
                       color: CyberpunkTheme.errorRed,
                       fontSize: 14,
@@ -84,11 +84,11 @@ class GameOverOverlay extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: const Color(
                       0xFF7F1D1D,
-                    ).withOpacity(0.2), // red-900/20
+                    ).withValues(alpha: 0.2), // red-900/20
                     border: Border.all(color: CyberpunkTheme.errorRed),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.red.withOpacity(0.5),
+                        color: Colors.red.withValues(alpha: 0.5),
                         blurRadius: 10,
                       ),
                     ],
