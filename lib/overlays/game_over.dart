@@ -11,9 +11,10 @@ class GameOverOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(50),
         color: Colors.black.withOpacity(0.85),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -58,6 +59,42 @@ class GameOverOverlay extends StatelessWidget {
                   ),
                   child: Text(
                     'REBOOT SYSTEM',
+                    style: CyberpunkTheme.pressStart2P.copyWith(
+                      color: CyberpunkTheme.errorRed,
+                      fontSize: 14,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  game.overlays.remove('GameOver');
+                  game.overlays.add('MainMenu');
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(
+                      0xFF7F1D1D,
+                    ).withOpacity(0.2), // red-900/20
+                    border: Border.all(color: CyberpunkTheme.errorRed),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.red.withOpacity(0.5),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'BACK TO MENU',
                     style: CyberpunkTheme.pressStart2P.copyWith(
                       color: CyberpunkTheme.errorRed,
                       fontSize: 14,
