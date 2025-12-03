@@ -120,6 +120,20 @@ class SnakeGame extends FlameGame with KeyboardEvents {
     overlays.add('GameOver');
   }
 
+  void togglePause() {
+    if (isGameOver) return;
+
+    if (isPlaying) {
+      isPlaying = false;
+      pauseEngine();
+    } else {
+      isPlaying = true;
+      resumeEngine();
+    }
+    overlays.remove('GameOverlay');
+    overlays.add('GameOverlay');
+  }
+
   void onArrowKey(Vector2 direction) {
     if (isPlaying && !isGameOver) {
       snake.changeDirection(direction);

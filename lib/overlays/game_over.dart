@@ -18,7 +18,7 @@ class GameOverOverlay extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'SYSTEM FAILURE',
+              'GAME OVER',
               style: CyberpunkTheme.pressStart2P.copyWith(
                 fontSize: 30,
                 color: CyberpunkTheme.errorRed,

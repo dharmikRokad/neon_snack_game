@@ -23,7 +23,7 @@ class Food extends PositionComponent {
 
     // Glow
     final glowPaint = Paint()
-      ..color = CyberpunkTheme.neonPink.withOpacity(0.6)
+      ..color = CyberpunkTheme.neonPink.withValues(alpha: 0.6)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
 
     canvas.drawRect(

@@ -24,6 +24,18 @@ class GameOverlay extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildScoreBox('SCORE', game.score),
+
+              _buildBorderdBox(
+                IconButton(
+                  onPressed: game.togglePause,
+                  icon: Icon(
+                    game.isPlaying ? Icons.pause : Icons.play_arrow,
+                    color: CyberpunkTheme.primary,
+                    size: 32,
+                  ),
+                ),
+              ),
+
               _buildScoreBox('HI-SCORE', game.highScore),
             ],
           ),
@@ -44,7 +56,7 @@ class GameOverlay extends StatelessWidget {
     );
   }
 
-  Widget _buildScoreBox(String label, int value) {
+  Widget _buildBorderdBox(Widget child) {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -54,7 +66,13 @@ class GameOverlay extends StatelessWidget {
           color: const Color(0xFF14532D).withValues(alpha: 0.5),
         ), // green-900/50
       ),
-      child: Column(
+      child: child,
+    );
+  }
+
+  Widget _buildScoreBox(String label, int value) {
+    return _buildBorderdBox(
+      Column(
         children: [
           Text(label, style: CyberpunkTheme.hudScoreLabel),
           const SizedBox(height: 8),
