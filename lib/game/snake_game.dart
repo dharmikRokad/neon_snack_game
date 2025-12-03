@@ -4,6 +4,7 @@ import 'package:flame/input.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:snake_game_flame/game/grid_background.dart';
+import 'package:snake_game_flame/utils/shared_prefs.dart';
 import 'snake.dart';
 import 'food.dart';
 import 'theme.dart';
@@ -17,7 +18,7 @@ class SnakeGame extends FlameGame with KeyboardEvents {
   double speed = 0.15;
 
   int score = 0;
-  int highScore = 0;
+  int highScore = SharedPrefs().getHighScore();
 
   // Game State
   bool isPlaying = false;
@@ -93,6 +94,7 @@ class SnakeGame extends FlameGame with KeyboardEvents {
       score++;
       if (score > highScore) {
         highScore = score;
+        SharedPrefs().setHighScore(highScore);
       }
       // Force overlay rebuild to update score
       overlays.remove('GameOverlay');

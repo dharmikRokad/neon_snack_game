@@ -20,7 +20,7 @@ class Snake extends PositionComponent with HasGameRef<SnakeGame> {
       final paint = Paint();
 
       if (isHead) {
-        paint.color = CyberpunkTheme.neonGreenBright;
+        paint.color = CyberpunkTheme.primaryBright;
         paint.maskFilter = const MaskFilter.blur(
           BlurStyle.solid,
           2,
@@ -29,16 +29,16 @@ class Snake extends PositionComponent with HasGameRef<SnakeGame> {
         // We can simulate it by drawing a blurred rect behind or using MaskFilter.
         // Or just use the color.
       } else if (isTail) {
-        paint.color = CyberpunkTheme.neonGreenDim;
+        paint.color = CyberpunkTheme.primaryDim;
       } else {
-        paint.color = CyberpunkTheme.neonGreen;
+        paint.color = CyberpunkTheme.primary;
       }
 
       // Draw Glow (Shadow)
       if (isHead || i < 10) {
         // Glow for head and first few segments
         final glowPaint = Paint()
-          ..color = CyberpunkTheme.neonGreen.withValues(alpha: 0.6)
+          ..color = CyberpunkTheme.primary.withValues(alpha: 0.6)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
 
         canvas.drawRect(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:snake_game_flame/utils/shared_prefs.dart';
 
 enum GameTheme { neonGreen, synthwave, oceanBlue, fireRed }
 
@@ -89,12 +90,18 @@ class GameThemeData {
 }
 
 class CyberpunkTheme {
-  static GameThemeData _currentTheme = GameThemeData.neonGreen;
+  static GameTheme _currentTheme = SharedPrefs().getTheme();
 
-  static GameThemeData get current => _currentTheme;
+  static GameThemeData _currentThemeData = GameThemeData.fromEnum(
+    _currentTheme,
+  );
+
+  static GameThemeData get current => _currentThemeData;
 
   static void setTheme(GameTheme theme) {
-    _currentTheme = GameThemeData.fromEnum(theme);
+    _currentTheme = theme;
+    SharedPrefs().setTheme(theme);
+    _currentThemeData = GameThemeData.fromEnum(theme);
   }
 
   static const Color background = Color(0xFF000000);
@@ -102,19 +109,13 @@ class CyberpunkTheme {
   static const Color errorRed = Color(0xFFEF4444);
 
   // Theme-dependent colors
-  static Color get primary => _currentTheme.primary;
-  static Color get primaryDim => _currentTheme.primaryDim;
-  static Color get primaryBright => _currentTheme.primaryBright;
-  static Color get secondary => _currentTheme.secondary;
-  static Color get gridLine => _currentTheme.gridLine;
-  static Color get glassBackground => _currentTheme.glassBackground;
-  static Color get glassBorder => _currentTheme.glassBorder;
-
-  // Legacy accessors for backward compatibility
-  static Color get neonGreen => primary;
-  static Color get neonGreenDim => primaryDim;
-  static Color get neonGreenBright => primaryBright;
-  static Color get neonPink => secondary;
+  static Color get primary => _currentThemeData.primary;
+  static Color get primaryDim => _currentThemeData.primaryDim;
+  static Color get primaryBright => _currentThemeData.primaryBright;
+  static Color get secondary => _currentThemeData.secondary;
+  static Color get gridLine => _currentThemeData.gridLine;
+  static Color get glassBackground => _currentThemeData.glassBackground;
+  static Color get glassBorder => _currentThemeData.glassBorder;
 
   static TextStyle get pressStart2P => GoogleFonts.pressStart2p();
 
