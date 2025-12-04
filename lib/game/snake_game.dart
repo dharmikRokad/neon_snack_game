@@ -1,10 +1,10 @@
-import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:snake_game_flame/game/grid_background.dart';
 import 'package:snake_game_flame/utils/shared_prefs.dart';
+import 'package:snake_game_flame/utils/audio_manager.dart';
 import 'snake.dart';
 import 'food.dart';
 import 'theme.dart';
@@ -29,6 +29,9 @@ class SnakeGame extends FlameGame with KeyboardEvents {
 
   @override
   Future<void> onLoad() async {
+    // Initialize audio
+    await AudioManager().initialize();
+
     // Grid Background
     add(GridBackground());
 
@@ -40,16 +43,22 @@ class SnakeGame extends FlameGame with KeyboardEvents {
     // Initial State
     pauseEngine();
     overlays.add('MainMenu');
+
+    // Start background music
+    // await AudioManager().startBackgroundMusic();
   }
 
-  void startGame() {
+  void startGame() async {
     resetGameState();
-    overlays.remove('MainMenu');
+    overlays.remove('MainMenu');      
     overlays.remove('GameOver');
     overlays.add('GameOverlay');
     resumeEngine();
     isPlaying = true;
     isGameOver = false;
+
+    // ✅ First time we actually start the music, after user interaction
+    await AudioManager().startBackgroundMusic();
   }
 
   void resetGame() {
@@ -88,6 +97,9 @@ class SnakeGame extends FlameGame with KeyboardEvents {
 
   void checkCollisions() {
     if (snake.head == food.gridPosition) {
+      // Play eat sound effect
+      AudioManager().playEatSound();
+
       food.respawn(size, gridSize);
       snake.grow();
       increaseSpeed();
@@ -118,6 +130,11 @@ class SnakeGame extends FlameGame with KeyboardEvents {
     isPlaying = false;
     isGameOver = true;
     pauseEngine();
+
+    // Play game over sound and pause background music
+    AudioManager().playGameOverSound();
+    AudioManager().pauseBackgroundMusic();
+
     overlays.remove('GameOverlay');
     overlays.add('GameOver');
   }
@@ -128,9 +145,11 @@ class SnakeGame extends FlameGame with KeyboardEvents {
     if (isPlaying) {
       isPlaying = false;
       pauseEngine();
+      AudioManager().pauseBackgroundMusic();
     } else {
       isPlaying = true;
       resumeEngine();
+      AudioManager().resumeBackgroundMusic();
     }
     overlays.remove('GameOverlay');
     overlays.add('GameOverlay');
