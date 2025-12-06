@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:snake_game_flame/controllers/game_controller.dart';
+import 'package:snake_game_flame/utils/constants/app_strings.dart';
 import '../game/theme.dart';
 
 /// Main menu overlay using Provider for state management.
@@ -45,7 +46,7 @@ class _MainMenuOverlayState extends State<MainMenuOverlay> {
                     end: Alignment.bottomCenter,
                   ).createShader(bounds),
                   child: Text(
-                    'NEON SNAKE',
+                    AppStrings.neonSnack.toUpperCase(),
                     style: CyberpunkTheme.pressStart2P.copyWith(
                       fontSize: 36,
                       color: Colors.white,
@@ -71,10 +72,10 @@ class _MainMenuOverlayState extends State<MainMenuOverlay> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                const Text(
-                  '// OBJECTIVE: CONSUME DATA PACKETS\n'
-                  '// AVOID: SYSTEM WALLS & SELF-INTERSECTION\n'
-                  '// CONTROLS: ARROWS / SWIPE',
+                Text(
+                  '${AppStrings.objective.toUpperCase()}\n'
+                  '${AppStrings.avoid.toUpperCase()}\n'
+                  '${AppStrings.controls.toUpperCase()}\n',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Courier',
@@ -88,7 +89,7 @@ class _MainMenuOverlayState extends State<MainMenuOverlay> {
 
                 // Theme Selection Section
                 Text(
-                  'SELECT THEME',
+                  AppStrings.selectTheme.toUpperCase(),
                   style: CyberpunkTheme.pressStart2P.copyWith(
                     fontSize: 12,
                     color: CyberpunkTheme.textGray,
@@ -140,7 +141,7 @@ class _MainMenuOverlayState extends State<MainMenuOverlay> {
                         ],
                       ),
                       child: Text(
-                        "LET'S PLAY",
+                        AppStrings.letsPlay.toUpperCase(),
                         style: CyberpunkTheme.pressStart2P.copyWith(
                           color: CyberpunkTheme.primary,
                           fontSize: 14,

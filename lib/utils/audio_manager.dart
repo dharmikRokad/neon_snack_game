@@ -1,4 +1,5 @@
 import 'package:flame_audio/flame_audio.dart';
+import 'package:snake_game_flame/utils/constants/app_sounds.dart';
 
 /// Singleton class to manage all audio in the game
 class AudioManager {
@@ -19,9 +20,9 @@ class AudioManager {
     try {
       // Preload all audio files for better performance
       await Future.wait([
-        FlameAudio.audioCache.load('eat.wav'),
-        FlameAudio.audioCache.load('game_over.wav'),
-        FlameAudio.audioCache.load('background.mp3'),
+        FlameAudio.audioCache.load(AppSounds.eatSound),
+        FlameAudio.audioCache.load(AppSounds.gameOverSound),
+        FlameAudio.audioCache.load(AppSounds.bgMusic),
       ]);
 
       _initialized = true;
@@ -36,7 +37,7 @@ class AudioManager {
   void playEatSound() {
     if (!_initialized || _isSfxMuted) return;
     try {
-      FlameAudio.play('eat.wav', volume: 0.5);
+      FlameAudio.play(AppSounds.eatSound, volume: 0.5);
     } catch (e) {
       print('Failed to play eat sound: $e');
     }
@@ -46,7 +47,7 @@ class AudioManager {
   void playGameOverSound() {
     if (!_initialized || _isSfxMuted) return;
     try {
-      FlameAudio.play('game_over.wav', volume: 0.6);
+      FlameAudio.play(AppSounds.gameOverSound, volume: 0.6);
     } catch (e) {
       print('Failed to play game over sound: $e');
     }
@@ -56,7 +57,7 @@ class AudioManager {
   Future<void> startBackgroundMusic() async {
     if (!_initialized || _isMusicMuted) return;
     try {
-      await FlameAudio.bgm.play('background.mp3', volume: 0.3);
+      await FlameAudio.bgm.play(AppSounds.bgMusic, volume: 0.3);
     } catch (e) {
       print('Failed to play background music: $e');
     }

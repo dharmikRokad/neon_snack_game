@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:provider/provider.dart';
 import 'package:snake_game_flame/controllers/game_controller.dart';
+import 'package:snake_game_flame/utils/constants/app_strings.dart';
 import '../game/theme.dart';
 
 /// Control panel widget that uses Provider to access GameController.
@@ -53,14 +54,14 @@ class ControlPanel extends StatelessWidget {
               _buildActionButton(
                 icon: controller.isPlaying ? Icons.pause : Icons.play_arrow,
                 tooltip: controller.isPlaying
-                    ? 'Pause (Spacebar)'
-                    : 'Play (Spacebar)',
+                    ? AppStrings.pauseWithShortCutKey
+                    : AppStrings.playWithShortCutKey,
                 onTap: controller.togglePause,
               ),
               const SizedBox(width: 16),
               _buildActionButton(
                 icon: Icons.settings,
-                tooltip: 'Settings (F1)',
+                tooltip: AppStrings.settingsWithShortCutKey,
                 onTap: controller.toggleSettings,
               ),
             ],
@@ -93,8 +94,14 @@ class ControlPanel extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildCompactScoreBox('SCORE', controller.score),
-                    _buildCompactScoreBox('HI-SCORE', controller.highScore),
+                    _buildCompactScoreBox(
+                      AppStrings.score.toUpperCase(),
+                      controller.score,
+                    ),
+                    _buildCompactScoreBox(
+                      AppStrings.hiScore.toUpperCase(),
+                      controller.highScore,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -106,15 +113,15 @@ class ControlPanel extends StatelessWidget {
                           ? Icons.pause
                           : Icons.play_arrow,
                       tooltip: controller.isPlaying
-                          ? 'Pause (Spacebar)'
-                          : 'Play (Spacebar)',
+                          ? AppStrings.pauseWithShortCutKey
+                          : AppStrings.playWithShortCutKey,
                       onTap: controller.togglePause,
                       size: 36,
                     ),
                     const SizedBox(width: 12),
                     _buildActionButton(
                       icon: Icons.settings,
-                      tooltip: 'Settings  (F1)',
+                      tooltip: AppStrings.settingsWithShortCutKey,
                       onTap: controller.toggleSettings,
                       size: 36,
                     ),

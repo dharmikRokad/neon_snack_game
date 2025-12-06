@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:snake_game_flame/utils/constants/app_strings.dart';
 import 'package:snake_game_flame/utils/shared_prefs.dart';
 
 enum GameTheme { neonGreen, synthwave, oceanBlue, fireRed }
@@ -27,8 +28,8 @@ class GameThemeData {
     required this.titleGradient,
   });
 
-  static const neonGreen = GameThemeData(
-    name: 'NEON GREEN',
+  static final neonGreen = GameThemeData(
+    name: AppStrings.neonGreen.toUpperCase(),
     primary: Color(0xFF00FF00),
     primaryDim: Color(0xFF008800),
     primaryBright: Color(0xFFCCFFCC),
@@ -39,8 +40,8 @@ class GameThemeData {
     titleGradient: [Color(0xFF4ADE80), Color(0xFF166534)],
   );
 
-  static const synthwave = GameThemeData(
-    name: 'SYNTHWAVE',
+  static final synthwave = GameThemeData(
+    name: AppStrings.synthwave.toUpperCase(),
     primary: Color(0xFFFF00FF), // Magenta
     primaryDim: Color(0xFF8800AA),
     primaryBright: Color(0xFFFFCCFF),
@@ -51,8 +52,8 @@ class GameThemeData {
     titleGradient: [Color(0xFFE879F9), Color(0xFF581C87)],
   );
 
-  static const oceanBlue = GameThemeData(
-    name: 'OCEAN BLUE',
+  static final oceanBlue = GameThemeData(
+    name: AppStrings.oceanBlue.toUpperCase(),
     primary: Color(0xFF00CCFF), // Bright Cyan
     primaryDim: Color(0xFF0066AA),
     primaryBright: Color(0xFFCCF0FF),
@@ -63,8 +64,8 @@ class GameThemeData {
     titleGradient: [Color(0xFF38BDF8), Color(0xFF075985)],
   );
 
-  static const fireRed = GameThemeData(
-    name: 'FIRE RED',
+  static final fireRed = GameThemeData(
+    name: AppStrings.fireRed.toUpperCase(),
     primary: Color(0xFFFF3300), // Red-Orange
     primaryDim: Color(0xFFAA1100),
     primaryBright: Color(0xFFFFCC99),

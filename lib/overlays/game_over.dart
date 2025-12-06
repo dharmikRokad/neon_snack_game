@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:snake_game_flame/controllers/game_controller.dart';
+import 'package:snake_game_flame/utils/constants/app_strings.dart';
 import '../game/theme.dart';
 
 /// Game over overlay using Provider for state management.
@@ -20,7 +21,7 @@ class GameOverOverlay extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'GAME OVER',
+              AppStrings.gameOver.toUpperCase(),
               style: CyberpunkTheme.pressStart2P.copyWith(
                 fontSize: 30,
                 color: CyberpunkTheme.errorRed,
@@ -29,7 +30,7 @@ class GameOverOverlay extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'FINAL SCORE: ${controller.score}',
+              '${AppStrings.finalScore.toUpperCase()}: ${controller.score}',
               style: CyberpunkTheme.pressStart2P.copyWith(
                 fontSize: 20,
                 color: Colors.white,
@@ -56,7 +57,7 @@ class GameOverOverlay extends StatelessWidget {
                     ],
                   ),
                   child: Text(
-                    'PLAY AGAIN',
+                    AppStrings.playAgain.toUpperCase(),
                     style: CyberpunkTheme.pressStart2P.copyWith(
                       color: CyberpunkTheme.errorRed,
                       fontSize: 14,
@@ -87,7 +88,7 @@ class GameOverOverlay extends StatelessWidget {
                     ],
                   ),
                   child: Text(
-                    'BACK TO MENU',
+                    AppStrings.backToMenu.toUpperCase(),
                     style: CyberpunkTheme.pressStart2P.copyWith(
                       color: CyberpunkTheme.errorRed,
                       fontSize: 14,

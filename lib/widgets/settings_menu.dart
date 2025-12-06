@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snake_game_flame/utils/constants/app_strings.dart';
 import '../game/theme.dart';
 import '../utils/audio_manager.dart';
 
@@ -80,7 +81,7 @@ class _SettingsMenuState extends State<SettingsMenu>
                     children: [
                       // Title
                       Text(
-                        'SETTINGS',
+                        AppStrings.settings.toUpperCase(),
                         style: CyberpunkTheme.pressStart2P.copyWith(
                           fontSize: 16,
                           color: CyberpunkTheme.primary,
@@ -96,7 +97,7 @@ class _SettingsMenuState extends State<SettingsMenu>
 
                       // Sound Effects Toggle
                       _buildToggleRow(
-                        label: 'SOUND FX',
+                        label: AppStrings.soundFx.toUpperCase(),
                         value: !AudioManager().isSfxMuted,
                         onChanged: (_) {
                           setState(() {
@@ -108,7 +109,7 @@ class _SettingsMenuState extends State<SettingsMenu>
 
                       // Music Toggle
                       _buildToggleRow(
-                        label: 'MUSIC',
+                        label: AppStrings.music.toUpperCase(),
                         value: !AudioManager().isMusicMuted,
                         onChanged: (_) {
                           setState(() {
@@ -136,7 +137,7 @@ class _SettingsMenuState extends State<SettingsMenu>
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              'CLOSE',
+                              AppStrings.close.toUpperCase(),
                               style: CyberpunkTheme.pressStart2P.copyWith(
                                 fontSize: 10,
                                 color: CyberpunkTheme.primary,
