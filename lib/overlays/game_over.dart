@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import '../game/snake_game.dart';
+import 'package:provider/provider.dart';
+import 'package:snake_game_flame/controllers/game_controller.dart';
+import 'package:snake_game_flame/utils/constants/app_strings.dart';
 import '../game/theme.dart';
 
+/// Game over overlay using Provider for state management.
 class GameOverOverlay extends StatelessWidget {
-  final SnakeGame game;
-
-  const GameOverOverlay({super.key, required this.game});
+  const GameOverOverlay({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<GameController>();
+
     return Center(
       child: Container(
         padding: const EdgeInsets.all(50),
@@ -18,7 +21,7 @@ class GameOverOverlay extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'GAME OVER',
+              AppStrings.gameOver.toUpperCase(),
               style: CyberpunkTheme.pressStart2P.copyWith(
                 fontSize: 30,
                 color: CyberpunkTheme.errorRed,
@@ -27,7 +30,7 @@ class GameOverOverlay extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'FINAL SCORE: ${game.score}',
+              '${AppStrings.finalScore.toUpperCase()}: ${controller.score}',
               style: CyberpunkTheme.pressStart2P.copyWith(
                 fontSize: 20,
                 color: Colors.white,
@@ -37,18 +40,14 @@ class GameOverOverlay extends StatelessWidget {
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
-                onTap: () {
-                  game.resetGame();
-                },
+                onTap: () => controller.startGame(),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 16,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(
-                      0xFF7F1D1D,
-                    ).withValues(alpha: 0.2), // red-900/20
+                    color: const Color(0xFF7F1D1D).withValues(alpha: 0.2),
                     border: Border.all(color: CyberpunkTheme.errorRed),
                     boxShadow: [
                       BoxShadow(
@@ -58,7 +57,7 @@ class GameOverOverlay extends StatelessWidget {
                     ],
                   ),
                   child: Text(
-                    'PLAY AGAIN',
+                    AppStrings.playAgain.toUpperCase(),
                     style: CyberpunkTheme.pressStart2P.copyWith(
                       color: CyberpunkTheme.errorRed,
                       fontSize: 14,
@@ -72,19 +71,14 @@ class GameOverOverlay extends StatelessWidget {
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
-                onTap: () {
-                  game.overlays.remove('GameOver');
-                  game.overlays.add('MainMenu');
-                },
+                onTap: () => controller.restartFromMain(),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 16,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(
-                      0xFF7F1D1D,
-                    ).withValues(alpha: 0.2), // red-900/20
+                    color: const Color(0xFF7F1D1D).withValues(alpha: 0.2),
                     border: Border.all(color: CyberpunkTheme.errorRed),
                     boxShadow: [
                       BoxShadow(
@@ -94,7 +88,7 @@ class GameOverOverlay extends StatelessWidget {
                     ],
                   ),
                   child: Text(
-                    'BACK TO MENU',
+                    AppStrings.backToMenu.toUpperCase(),
                     style: CyberpunkTheme.pressStart2P.copyWith(
                       color: CyberpunkTheme.errorRed,
                       fontSize: 14,
