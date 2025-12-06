@@ -23,6 +23,7 @@ class SnakeGame extends FlameGame with KeyboardEvents, ChangeNotifier {
   // Game State
   bool isPlaying = false;
   bool isGameOver = false;
+  bool showSettings = false;
 
   @override
   Color backgroundColor() => CyberpunkTheme.background;
@@ -62,8 +63,9 @@ class SnakeGame extends FlameGame with KeyboardEvents, ChangeNotifier {
     await AudioManager().startBackgroundMusic();
   }
 
-  void resetGame() {
-    startGame();
+  void restartFromMain() {
+    overlays.remove('GameOver');
+    overlays.add('MainMenu');
   }
 
   void refreshTheme() {
@@ -159,6 +161,31 @@ class SnakeGame extends FlameGame with KeyboardEvents, ChangeNotifier {
     notifyListeners();
   }
 
+  /// Track if game was playing before opening settings
+  bool _wasPlayingBeforeSettings = false;
+
+  void toggleSettings() {
+    showSettings = !showSettings;
+
+    if (showSettings) {
+      // Store current playing state and pause if playing
+      _wasPlayingBeforeSettings = isPlaying;
+      if (isPlaying) {
+        isPlaying = false;
+        pauseEngine();
+      }
+      overlays.add('Settings');
+    } else {
+      overlays.remove('Settings');
+      // Resume only if game was playing before opening settings and not game over
+      if (_wasPlayingBeforeSettings && !isGameOver) {
+        isPlaying = true;
+        resumeEngine();
+      }
+    }
+    notifyListeners();
+  }
+
   void onArrowKey(Vector2 direction) {
     if (isPlaying && !isGameOver) {
       snake.changeDirection(direction);
@@ -180,11 +207,7 @@ class SnakeGame extends FlameGame with KeyboardEvents, ChangeNotifier {
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
         onArrowKey(Vector2(1, 0));
       } else if (keysPressed.contains(LogicalKeyboardKey.space)) {
-        if (!isPlaying && !isGameOver) {
-          startGame();
-        } else if (isGameOver) {
-          resetGame();
-        }
+        togglePause();
       }
     }
     return KeyEventResult.handled;

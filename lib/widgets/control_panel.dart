@@ -2,50 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import '../game/snake_game.dart';
 import '../game/theme.dart';
-import 'settings_menu.dart';
 
-class ControlPanel extends StatefulWidget {
+class ControlPanel extends StatelessWidget {
   final SnakeGame game;
   final bool isVertical; // true for mobile layout (horizontal strip at bottom)
 
   const ControlPanel({super.key, required this.game, this.isVertical = false});
 
   @override
-  State<ControlPanel> createState() => _ControlPanelState();
-}
-
-class _ControlPanelState extends State<ControlPanel> {
-  bool _showSettings = false;
-
-  void _toggleSettings() {
-    setState(() {
-      _showSettings = !_showSettings;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.8),
-            border: Border(
-              left: widget.isVertical
-                  ? BorderSide.none
-                  : BorderSide(color: CyberpunkTheme.glassBorder, width: 1),
-              top: widget.isVertical
-                  ? BorderSide(color: CyberpunkTheme.glassBorder, width: 1)
-                  : BorderSide.none,
-            ),
-          ),
-          child: widget.isVertical
-              ? _buildHorizontalLayout()
-              : _buildVerticalLayout(),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.8),
+        border: Border(
+          left: isVertical
+              ? BorderSide.none
+              : BorderSide(color: CyberpunkTheme.glassBorder, width: 1),
+          top: isVertical
+              ? BorderSide(color: CyberpunkTheme.glassBorder, width: 1)
+              : BorderSide.none,
         ),
-        if (_showSettings)
-          Positioned.fill(child: SettingsMenu(onClose: _toggleSettings)),
-      ],
+      ),
+      child: isVertical ? _buildHorizontalLayout() : _buildVerticalLayout(),
     );
   }
 
@@ -57,9 +35,9 @@ class _ControlPanelState extends State<ControlPanel> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Score section
-          _buildScoreBox('SCORE', widget.game.score),
+          _buildScoreBox('SCORE', game.score),
           const SizedBox(height: 16),
-          _buildScoreBox('HI-SCORE', widget.game.highScore),
+          _buildScoreBox('HI-SCORE', game.highScore),
 
           const Spacer(),
 
@@ -68,11 +46,14 @@ class _ControlPanelState extends State<ControlPanel> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildActionButton(
-                icon: widget.game.isPlaying ? Icons.pause : Icons.play_arrow,
-                onTap: widget.game.togglePause,
+                icon: game.isPlaying ? Icons.pause : Icons.play_arrow,
+                onTap: game.togglePause,
               ),
               const SizedBox(width: 16),
-              _buildActionButton(icon: Icons.settings, onTap: _toggleSettings),
+              _buildActionButton(
+                icon: Icons.settings,
+                onTap: game.toggleSettings,
+              ),
             ],
           ),
           const SizedBox(height: 24),
@@ -101,8 +82,8 @@ class _ControlPanelState extends State<ControlPanel> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildCompactScoreBox('SCORE', widget.game.score),
-                    _buildCompactScoreBox('HI-SCORE', widget.game.highScore),
+                    _buildCompactScoreBox('SCORE', game.score),
+                    _buildCompactScoreBox('HI-SCORE', game.highScore),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -110,16 +91,14 @@ class _ControlPanelState extends State<ControlPanel> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildActionButton(
-                      icon: widget.game.isPlaying
-                          ? Icons.pause
-                          : Icons.play_arrow,
-                      onTap: widget.game.togglePause,
+                      icon: game.isPlaying ? Icons.pause : Icons.play_arrow,
+                      onTap: game.togglePause,
                       size: 36,
                     ),
                     const SizedBox(width: 12),
                     _buildActionButton(
                       icon: Icons.settings,
-                      onTap: _toggleSettings,
+                      onTap: game.toggleSettings,
                       size: 36,
                     ),
                   ],
@@ -218,16 +197,16 @@ class _ControlPanelState extends State<ControlPanel> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildControlBtn('▲', () => widget.game.onArrowKey(Vector2(0, -1))),
+        _buildControlBtn('▲', () => game.onArrowKey(Vector2(0, -1))),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildControlBtn('◀', () => widget.game.onArrowKey(Vector2(-1, 0))),
+            _buildControlBtn('◀', () => game.onArrowKey(Vector2(-1, 0))),
             const SizedBox(width: 60),
-            _buildControlBtn('▶', () => widget.game.onArrowKey(Vector2(1, 0))),
+            _buildControlBtn('▶', () => game.onArrowKey(Vector2(1, 0))),
           ],
         ),
-        _buildControlBtn('▼', () => widget.game.onArrowKey(Vector2(0, 1))),
+        _buildControlBtn('▼', () => game.onArrowKey(Vector2(0, 1))),
       ],
     );
   }
@@ -236,32 +215,24 @@ class _ControlPanelState extends State<ControlPanel> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildControlBtn(
-          '▲',
-          () => widget.game.onArrowKey(Vector2(0, -1)),
-          size: 40,
-        ),
+        _buildControlBtn('▲', () => game.onArrowKey(Vector2(0, -1)), size: 40),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildControlBtn(
               '◀',
-              () => widget.game.onArrowKey(Vector2(-1, 0)),
+              () => game.onArrowKey(Vector2(-1, 0)),
               size: 40,
             ),
             const SizedBox(width: 44),
             _buildControlBtn(
               '▶',
-              () => widget.game.onArrowKey(Vector2(1, 0)),
+              () => game.onArrowKey(Vector2(1, 0)),
               size: 40,
             ),
           ],
         ),
-        _buildControlBtn(
-          '▼',
-          () => widget.game.onArrowKey(Vector2(0, 1)),
-          size: 40,
-        ),
+        _buildControlBtn('▼', () => game.onArrowKey(Vector2(0, 1)), size: 40),
       ],
     );
   }

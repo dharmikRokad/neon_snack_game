@@ -37,9 +37,7 @@ class GameOverOverlay extends StatelessWidget {
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
-                onTap: () {
-                  game.resetGame();
-                },
+                onTap: () => game.startGame(),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
@@ -72,10 +70,7 @@ class GameOverOverlay extends StatelessWidget {
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
-                onTap: () {
-                  game.overlays.remove('GameOver');
-                  game.overlays.add('MainMenu');
-                },
+                onTap: () => game.restartFromMain(),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,

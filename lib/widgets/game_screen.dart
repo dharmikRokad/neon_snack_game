@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
+import 'package:snake_game_flame/game/theme.dart';
 import '../game/snake_game.dart';
 import '../overlays/main_menu.dart';
 import '../overlays/game_over.dart';
 import '../overlays/game_overlay.dart';
+import '../widgets/settings_menu.dart';
 import 'control_panel.dart';
 
 /// The main game screen with responsive two-panel layout.
@@ -50,20 +52,27 @@ class _GameScreenState extends State<GameScreen> {
       maxControlPanelWidth,
     );
 
+    // Only show control panel when actively playing (no MainMenu or GameOver)
+    final activeOverlays = _game.overlays.activeOverlays;
+    final shouldShowControlPanel =
+        !activeOverlays.contains('MainMenu') &&
+        !activeOverlays.contains('GameOver');
+
     return Row(
       children: [
         // Game Area (left panel)
         Expanded(child: _buildGameWidget()),
-        // Control Panel (right panel)
-        SizedBox(
-          width: actualControlPanelWidth,
-          child: ListenableBuilder(
-            listenable: _game,
-            builder: (context, _) {
-              return ControlPanel(game: _game, isVertical: false);
-            },
+        // Control Panel (right panel) - only show when playing
+        if (shouldShowControlPanel)
+          SizedBox(
+            width: actualControlPanelWidth,
+            child: ListenableBuilder(
+              listenable: _game,
+              builder: (context, _) {
+                return ControlPanel(game: _game, isVertical: false);
+              },
+            ),
           ),
-        ),
       ],
     );
   }
@@ -78,34 +87,46 @@ class _GameScreenState extends State<GameScreen> {
       maxControlPanelHeight,
     );
 
+    // Only show control panel when actively playing (no MainMenu or GameOver)
+    final activeOverlays = _game.overlays.activeOverlays;
+    final shouldShowControlPanel =
+        !activeOverlays.contains('MainMenu') &&
+        !activeOverlays.contains('GameOver');
+
     return Column(
       children: [
         // Game Area (top panel)
         Expanded(child: _buildGameWidget()),
-        // Control Panel (bottom panel)
-        SizedBox(
-          height: actualControlPanelHeight,
-          child: ListenableBuilder(
-            listenable: _game,
-            builder: (context, _) {
-              return ControlPanel(game: _game, isVertical: true);
-            },
+        // Control Panel (bottom panel) - only show when playing
+        if (shouldShowControlPanel)
+          SizedBox(
+            height: actualControlPanelHeight,
+            child: ListenableBuilder(
+              listenable: _game,
+              builder: (context, _) {
+                return ControlPanel(game: _game, isVertical: true);
+              },
+            ),
           ),
-        ),
       ],
     );
   }
 
   Widget _buildGameWidget() {
-    return ClipRect(
-      child: GameWidget<SnakeGame>(
-        game: _game,
-        overlayBuilderMap: {
-          'MainMenu': (_, game) => MainMenuOverlay(game: game),
-          'GameOver': (_, game) => GameOverOverlay(game: game),
-          'GameOverlay': (_, game) => GameOverlay(game: game),
-        },
-        initialActiveOverlays: const ['MainMenu'],
+    return Container(
+      color: CyberpunkTheme.background,
+      padding: EdgeInsets.all(8),
+      child: ClipRect(
+        child: GameWidget<SnakeGame>(
+          game: _game,
+          overlayBuilderMap: {
+            'MainMenu': (_, game) => MainMenuOverlay(game: game),
+            'GameOver': (_, game) => GameOverOverlay(game: game),
+            'GameOverlay': (_, game) => GameOverlay(game: game),
+            'Settings': (_, game) => SettingsMenu(onClose: game.toggleSettings),
+          },
+          initialActiveOverlays: const ['MainMenu'],
+        ),
       ),
     );
   }
