@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../game/snake_game.dart';
+import 'package:provider/provider.dart';
+import 'package:snake_game_flame/controllers/game_controller.dart';
 import '../game/theme.dart';
 
+/// Main menu overlay using Provider for state management.
 class MainMenuOverlay extends StatefulWidget {
-  final SnakeGame game;
-
-  const MainMenuOverlay({super.key, required this.game});
+  const MainMenuOverlay({super.key});
 
   @override
   State<MainMenuOverlay> createState() => _MainMenuOverlayState();
@@ -17,14 +17,13 @@ class _MainMenuOverlayState extends State<MainMenuOverlay> {
   void _changeTheme(GameTheme theme) {
     setState(() {
       _selectedTheme = theme;
-      CyberpunkTheme.setTheme(theme);
-      // Force rebuild of the game to apply theme
-      widget.game.refreshTheme();
+      context.read<GameController>().changeTheme(theme);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.read<GameController>();
     final currentThemeData = CyberpunkTheme.current;
 
     return Stack(
@@ -49,7 +48,7 @@ class _MainMenuOverlayState extends State<MainMenuOverlay> {
                     'NEON SNAKE',
                     style: CyberpunkTheme.pressStart2P.copyWith(
                       fontSize: 36,
-                      color: Colors.white, // Required for ShaderMask
+                      color: Colors.white,
                       shadows: [
                         Shadow(blurRadius: 10, color: CyberpunkTheme.primary),
                       ],
@@ -122,7 +121,7 @@ class _MainMenuOverlayState extends State<MainMenuOverlay> {
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () => widget.game.startGame(),
+                    onTap: () => controller.startGame(),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 32,
@@ -162,7 +161,7 @@ class _MainMenuOverlayState extends State<MainMenuOverlay> {
           child: MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
-              onTap: () => widget.game.toggleSettings(),
+              onTap: () => controller.toggleSettings(),
               child: Container(
                 width: 48,
                 height: 48,

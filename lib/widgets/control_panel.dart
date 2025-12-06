@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
-import '../game/snake_game.dart';
+import 'package:provider/provider.dart';
+import 'package:snake_game_flame/controllers/game_controller.dart';
 import '../game/theme.dart';
 
+/// Control panel widget that uses Provider to access GameController.
 class ControlPanel extends StatelessWidget {
-  final SnakeGame game;
   final bool isVertical; // true for mobile layout (horizontal strip at bottom)
 
-  const ControlPanel({super.key, required this.game, this.isVertical = false});
+  const ControlPanel({super.key, this.isVertical = false});
 
   @override
   Widget build(BuildContext context) {
@@ -23,21 +24,25 @@ class ControlPanel extends StatelessWidget {
               : BorderSide.none,
         ),
       ),
-      child: isVertical ? _buildHorizontalLayout() : _buildVerticalLayout(),
+      child: isVertical
+          ? _buildHorizontalLayout(context)
+          : _buildVerticalLayout(context),
     );
   }
 
   // Desktop layout - vertical arrangement in right panel
-  Widget _buildVerticalLayout() {
+  Widget _buildVerticalLayout(BuildContext context) {
+    final controller = context.watch<GameController>();
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Score section
-          _buildScoreBox('SCORE', game.score),
+          _buildScoreBox('SCORE', controller.score),
           const SizedBox(height: 16),
-          _buildScoreBox('HI-SCORE', game.highScore),
+          _buildScoreBox('HI-SCORE', controller.highScore),
 
           const Spacer(),
 
@@ -46,20 +51,24 @@ class ControlPanel extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildActionButton(
-                icon: game.isPlaying ? Icons.pause : Icons.play_arrow,
-                onTap: game.togglePause,
+                icon: controller.isPlaying ? Icons.pause : Icons.play_arrow,
+                tooltip: controller.isPlaying
+                    ? 'Pause (Spacebar)'
+                    : 'Play (Spacebar)',
+                onTap: controller.togglePause,
               ),
               const SizedBox(width: 16),
               _buildActionButton(
                 icon: Icons.settings,
-                onTap: game.toggleSettings,
+                tooltip: 'Settings (F1)',
+                onTap: controller.toggleSettings,
               ),
             ],
           ),
           const SizedBox(height: 24),
 
           // D-Pad
-          Center(child: _buildDPad()),
+          Center(child: _buildDPad(context)),
           const SizedBox(height: 16),
         ],
       ),
@@ -67,7 +76,9 @@ class ControlPanel extends StatelessWidget {
   }
 
   // Mobile layout - horizontal arrangement in bottom panel
-  Widget _buildHorizontalLayout() {
+  Widget _buildHorizontalLayout(BuildContext context) {
+    final controller = context.watch<GameController>();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
@@ -82,8 +93,8 @@ class ControlPanel extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildCompactScoreBox('SCORE', game.score),
-                    _buildCompactScoreBox('HI-SCORE', game.highScore),
+                    _buildCompactScoreBox('SCORE', controller.score),
+                    _buildCompactScoreBox('HI-SCORE', controller.highScore),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -91,14 +102,20 @@ class ControlPanel extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildActionButton(
-                      icon: game.isPlaying ? Icons.pause : Icons.play_arrow,
-                      onTap: game.togglePause,
+                      icon: controller.isPlaying
+                          ? Icons.pause
+                          : Icons.play_arrow,
+                      tooltip: controller.isPlaying
+                          ? 'Pause (Spacebar)'
+                          : 'Play (Spacebar)',
+                      onTap: controller.togglePause,
                       size: 36,
                     ),
                     const SizedBox(width: 12),
                     _buildActionButton(
                       icon: Icons.settings,
-                      onTap: game.toggleSettings,
+                      tooltip: 'Settings  (F1)',
+                      onTap: controller.toggleSettings,
                       size: 36,
                     ),
                   ],
@@ -108,7 +125,7 @@ class ControlPanel extends StatelessWidget {
           ),
 
           // Right side: D-Pad
-          Expanded(flex: 2, child: Center(child: _buildCompactDPad())),
+          Expanded(flex: 2, child: Center(child: _buildCompactDPad(context))),
         ],
       ),
     );
@@ -167,72 +184,96 @@ class ControlPanel extends StatelessWidget {
   Widget _buildActionButton({
     required IconData icon,
     required VoidCallback onTap,
+    String? tooltip,
     double size = 48,
   }) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            color: CyberpunkTheme.glassBackground,
-            border: Border.all(color: CyberpunkTheme.glassBorder),
-            borderRadius: BorderRadius.circular(4),
-            boxShadow: [
-              BoxShadow(
-                color: CyberpunkTheme.primary.withValues(alpha: 0.2),
-                blurRadius: 8,
-              ),
-            ],
+      child: Tooltip(
+        message: tooltip,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              color: CyberpunkTheme.glassBackground,
+              border: Border.all(color: CyberpunkTheme.glassBorder),
+              borderRadius: BorderRadius.circular(4),
+              boxShadow: [
+                BoxShadow(
+                  color: CyberpunkTheme.primary.withValues(alpha: 0.2),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+            child: Icon(icon, color: CyberpunkTheme.primary, size: size * 0.5),
           ),
-          child: Icon(icon, color: CyberpunkTheme.primary, size: size * 0.5),
         ),
       ),
     );
   }
 
-  Widget _buildDPad() {
+  Widget _buildDPad(BuildContext context) {
+    final controller = context.read<GameController>();
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildControlBtn('▲', () => game.onArrowKey(Vector2(0, -1))),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildControlBtn('◀', () => game.onArrowKey(Vector2(-1, 0))),
-            const SizedBox(width: 60),
-            _buildControlBtn('▶', () => game.onArrowKey(Vector2(1, 0))),
-          ],
-        ),
-        _buildControlBtn('▼', () => game.onArrowKey(Vector2(0, 1))),
-      ],
-    );
-  }
+        _buildControlBtn(
+          '▲',
 
-  Widget _buildCompactDPad() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _buildControlBtn('▲', () => game.onArrowKey(Vector2(0, -1)), size: 40),
+          () => controller.onDirectionInput(Vector2(0, -1)),
+        ),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildControlBtn(
               '◀',
-              () => game.onArrowKey(Vector2(-1, 0)),
+              () => controller.onDirectionInput(Vector2(-1, 0)),
+            ),
+            const SizedBox(width: 60),
+            _buildControlBtn(
+              '▶',
+              () => controller.onDirectionInput(Vector2(1, 0)),
+            ),
+          ],
+        ),
+        _buildControlBtn('▼', () => controller.onDirectionInput(Vector2(0, 1))),
+      ],
+    );
+  }
+
+  Widget _buildCompactDPad(BuildContext context) {
+    final controller = context.read<GameController>();
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildControlBtn(
+          '▲',
+          () => controller.onDirectionInput(Vector2(0, -1)),
+          size: 40,
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildControlBtn(
+              '◀',
+              () => controller.onDirectionInput(Vector2(-1, 0)),
               size: 40,
             ),
             const SizedBox(width: 44),
             _buildControlBtn(
               '▶',
-              () => game.onArrowKey(Vector2(1, 0)),
+              () => controller.onDirectionInput(Vector2(1, 0)),
               size: 40,
             ),
           ],
         ),
-        _buildControlBtn('▼', () => game.onArrowKey(Vector2(0, 1)), size: 40),
+        _buildControlBtn(
+          '▼',
+          () => controller.onDirectionInput(Vector2(0, 1)),
+          size: 40,
+        ),
       ],
     );
   }

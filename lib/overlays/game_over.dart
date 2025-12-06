@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import '../game/snake_game.dart';
+import 'package:provider/provider.dart';
+import 'package:snake_game_flame/controllers/game_controller.dart';
 import '../game/theme.dart';
 
+/// Game over overlay using Provider for state management.
 class GameOverOverlay extends StatelessWidget {
-  final SnakeGame game;
-
-  const GameOverOverlay({super.key, required this.game});
+  const GameOverOverlay({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<GameController>();
+
     return Center(
       child: Container(
         padding: const EdgeInsets.all(50),
@@ -27,7 +29,7 @@ class GameOverOverlay extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'FINAL SCORE: ${game.score}',
+              'FINAL SCORE: ${controller.score}',
               style: CyberpunkTheme.pressStart2P.copyWith(
                 fontSize: 20,
                 color: Colors.white,
@@ -37,16 +39,14 @@ class GameOverOverlay extends StatelessWidget {
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
-                onTap: () => game.startGame(),
+                onTap: () => controller.startGame(),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 16,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(
-                      0xFF7F1D1D,
-                    ).withValues(alpha: 0.2), // red-900/20
+                    color: const Color(0xFF7F1D1D).withValues(alpha: 0.2),
                     border: Border.all(color: CyberpunkTheme.errorRed),
                     boxShadow: [
                       BoxShadow(
@@ -70,16 +70,14 @@ class GameOverOverlay extends StatelessWidget {
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
-                onTap: () => game.restartFromMain(),
+                onTap: () => controller.restartFromMain(),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 16,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(
-                      0xFF7F1D1D,
-                    ).withValues(alpha: 0.2), // red-900/20
+                    color: const Color(0xFF7F1D1D).withValues(alpha: 0.2),
                     border: Border.all(color: CyberpunkTheme.errorRed),
                     boxShadow: [
                       BoxShadow(

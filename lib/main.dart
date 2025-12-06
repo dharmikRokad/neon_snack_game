@@ -1,4 +1,6 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:snake_game_flame/controllers/game_controller.dart';
 import 'package:snake_game_flame/utils/shared_prefs.dart';
 import 'package:snake_game_flame/widgets/game_screen.dart';
 
@@ -7,6 +9,16 @@ void main() async {
   await SharedPrefs().init();
 
   runApp(
-    const Directionality(textDirection: TextDirection.ltr, child: GameScreen()),
+    ChangeNotifierProvider(
+      create: (_) => GameController(),
+      child: MaterialApp(
+        home: Scaffold(
+          body: const Directionality(
+            textDirection: TextDirection.ltr,
+            child: GameScreen(),
+          ),
+        ),
+      ),
+    ),
   );
 }

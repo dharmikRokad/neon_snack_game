@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import '../game/snake_game.dart';
 
+/// Game overlay with scanline effect - displayed during gameplay.
 class GameOverlay extends StatelessWidget {
-  final SnakeGame game;
-
-  const GameOverlay({super.key, required this.game});
+  const GameOverlay({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +31,6 @@ class ScanlineWidget extends StatelessWidget {
           tileMode: TileMode.repeated,
         ),
       ),
-      // We can use a CustomPainter for more complex scanlines if needed,
-      // but a repeating gradient is a good CSS approximation.
-      // However, LinearGradient doesn't support 'background-size' directly in BoxDecoration
-      // the same way CSS does for repeating patterns easily without a shader.
-      // Let's use a CustomPainter for the scanlines to be safe and accurate.
       child: CustomPaint(painter: ScanlinePainter()),
     );
   }

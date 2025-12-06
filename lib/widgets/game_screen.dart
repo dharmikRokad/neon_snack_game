@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
+import 'package:provider/provider.dart';
+import 'package:snake_game_flame/controllers/game_controller.dart';
+import 'package:snake_game_flame/controllers/game_state.dart';
 import 'package:snake_game_flame/game/theme.dart';
 import '../game/snake_game.dart';
 import '../overlays/main_menu.dart';
@@ -9,8 +12,7 @@ import '../widgets/settings_menu.dart';
 import 'control_panel.dart';
 
 /// The main game screen with responsive two-panel layout.
-/// - Desktop (width >= 768px): Game on left, controls on right
-/// - Mobile (width < 768px): Game on top, controls on bottom
+/// Uses Provider for state management.
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
 
@@ -19,12 +21,13 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  late SnakeGame _game;
-
   @override
   void initState() {
     super.initState();
-    _game = SnakeGame();
+    // Initialize after first frame to ensure context is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<GameController>().initialize();
+    });
   }
 
   @override
@@ -34,16 +37,18 @@ class _GameScreenState extends State<GameScreen> {
         final isDesktop = constraints.maxWidth >= 768;
 
         if (isDesktop) {
-          return _buildDesktopLayout(constraints);
+          return _buildDesktopLayout(context, constraints);
         } else {
-          return _buildMobileLayout(constraints);
+          return _buildMobileLayout(context, constraints);
         }
       },
     );
   }
 
-  Widget _buildDesktopLayout(BoxConstraints constraints) {
-    // Calculate proportions: game area gets ~70%, control panel gets ~30%
+  Widget _buildDesktopLayout(BuildContext context, BoxConstraints constraints) {
+    final controller = context.watch<GameController>();
+
+    // Calculate proportions
     final controlPanelWidth = constraints.maxWidth * 0.25;
     final minControlPanelWidth = 200.0;
     final maxControlPanelWidth = 280.0;
@@ -52,33 +57,24 @@ class _GameScreenState extends State<GameScreen> {
       maxControlPanelWidth,
     );
 
-    // Only show control panel when actively playing (no MainMenu or GameOver)
-    final activeOverlays = _game.overlays.activeOverlays;
-    final shouldShowControlPanel =
-        !activeOverlays.contains('MainMenu') &&
-        !activeOverlays.contains('GameOver');
-
     return Row(
       children: [
         // Game Area (left panel)
-        Expanded(child: _buildGameWidget()),
+        Expanded(child: _buildGameWidget(context, controller)),
         // Control Panel (right panel) - only show when playing
-        if (shouldShowControlPanel)
+        if (controller.shouldShowControlPanel)
           SizedBox(
             width: actualControlPanelWidth,
-            child: ListenableBuilder(
-              listenable: _game,
-              builder: (context, _) {
-                return ControlPanel(game: _game, isVertical: false);
-              },
-            ),
+            child: const ControlPanel(isVertical: false),
           ),
       ],
     );
   }
 
-  Widget _buildMobileLayout(BoxConstraints constraints) {
-    // Calculate proportions: game area gets ~65%, control panel gets ~35%
+  Widget _buildMobileLayout(BuildContext context, BoxConstraints constraints) {
+    final controller = context.watch<GameController>();
+
+    // Calculate proportions
     final controlPanelHeight = constraints.maxHeight * 0.30;
     final minControlPanelHeight = 160.0;
     final maxControlPanelHeight = 220.0;
@@ -87,47 +83,49 @@ class _GameScreenState extends State<GameScreen> {
       maxControlPanelHeight,
     );
 
-    // Only show control panel when actively playing (no MainMenu or GameOver)
-    final activeOverlays = _game.overlays.activeOverlays;
-    final shouldShowControlPanel =
-        !activeOverlays.contains('MainMenu') &&
-        !activeOverlays.contains('GameOver');
-
     return Column(
       children: [
         // Game Area (top panel)
-        Expanded(child: _buildGameWidget()),
+        Expanded(child: _buildGameWidget(context, controller)),
         // Control Panel (bottom panel) - only show when playing
-        if (shouldShowControlPanel)
+        if (controller.shouldShowControlPanel)
           SizedBox(
             height: actualControlPanelHeight,
-            child: ListenableBuilder(
-              listenable: _game,
-              builder: (context, _) {
-                return ControlPanel(game: _game, isVertical: true);
-              },
-            ),
+            child: const ControlPanel(isVertical: true),
           ),
       ],
     );
   }
 
-  Widget _buildGameWidget() {
+  Widget _buildGameWidget(BuildContext context, GameController controller) {
     return Container(
       color: CyberpunkTheme.background,
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: ClipRect(
-        child: GameWidget<SnakeGame>(
-          game: _game,
-          overlayBuilderMap: {
-            'MainMenu': (_, game) => MainMenuOverlay(game: game),
-            'GameOver': (_, game) => GameOverOverlay(game: game),
-            'GameOverlay': (_, game) => GameOverlay(game: game),
-            'Settings': (_, game) => SettingsMenu(onClose: game.toggleSettings),
-          },
-          initialActiveOverlays: const ['MainMenu'],
+        child: Stack(
+          children: [
+            // Flame game - no overlays managed by Flame
+            GameWidget<SnakeGame>(game: controller.game),
+            // Flutter overlays based on controller state
+            _buildOverlay(context, controller),
+          ],
         ),
       ),
     );
+  }
+
+  Widget _buildOverlay(BuildContext context, GameController controller) {
+    switch (controller.currentScreen) {
+      case GameScreenState.mainMenu:
+        return const MainMenuOverlay();
+      case GameScreenState.gameOver:
+        return const GameOverOverlay();
+      case GameScreenState.gameHud:
+        return const GameOverlay();
+      case GameScreenState.settings:
+        return SettingsMenu(onClose: () => controller.toggleSettings());
+      case GameScreenState.none:
+        return const SizedBox.shrink();
+    }
   }
 }
