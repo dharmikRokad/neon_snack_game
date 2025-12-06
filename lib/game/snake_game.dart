@@ -9,7 +9,7 @@ import 'snake.dart';
 import 'food.dart';
 import 'theme.dart';
 
-class SnakeGame extends FlameGame with KeyboardEvents {
+class SnakeGame extends FlameGame with KeyboardEvents, ChangeNotifier {
   late Snake snake;
   late Food food;
   static const double gridSize = 20.0;
@@ -50,12 +50,13 @@ class SnakeGame extends FlameGame with KeyboardEvents {
 
   void startGame() async {
     resetGameState();
-    overlays.remove('MainMenu');      
+    overlays.remove('MainMenu');
     overlays.remove('GameOver');
     overlays.add('GameOverlay');
     resumeEngine();
     isPlaying = true;
     isGameOver = false;
+    notifyListeners();
 
     // ✅ First time we actually start the music, after user interaction
     await AudioManager().startBackgroundMusic();
@@ -108,6 +109,7 @@ class SnakeGame extends FlameGame with KeyboardEvents {
         highScore = score;
         SharedPrefs().setHighScore(highScore);
       }
+      notifyListeners();
       // Force overlay rebuild to update score
       overlays.remove('GameOverlay');
       overlays.add('GameOverlay');
@@ -137,6 +139,7 @@ class SnakeGame extends FlameGame with KeyboardEvents {
 
     overlays.remove('GameOverlay');
     overlays.add('GameOver');
+    notifyListeners();
   }
 
   void togglePause() {
@@ -153,6 +156,7 @@ class SnakeGame extends FlameGame with KeyboardEvents {
     }
     overlays.remove('GameOverlay');
     overlays.add('GameOverlay');
+    notifyListeners();
   }
 
   void onArrowKey(Vector2 direction) {
