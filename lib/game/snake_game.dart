@@ -20,7 +20,8 @@ class SnakeGame extends FlameGame with KeyboardEvents {
   // Callbacks to notify controller
   final VoidCallback? onFoodEaten;
   final VoidCallback? onGameOver;
-  final KeyEventResult Function(KeyEvent, Set<LogicalKeyboardKey>) onKeyboardKey;
+  final KeyEventResult Function(KeyEvent, Set<LogicalKeyboardKey>)
+  onKeyboardKey;
 
   SnakeGame({
     this.onFoodEaten,
@@ -29,7 +30,7 @@ class SnakeGame extends FlameGame with KeyboardEvents {
   });
 
   @override
-  Color backgroundColor() => CyberpunkTheme.background;
+  Color backgroundColor() => CyberpunkTheme.background;  
 
   @override
   Future<void> onLoad() async {
@@ -88,5 +89,5 @@ class SnakeGame extends FlameGame with KeyboardEvents {
   KeyEventResult onKeyEvent(
     KeyEvent event,
     Set<LogicalKeyboardKey> keysPressed,
-  )  => onKeyboardKey(event, keysPressed);
+  ) => onKeyboardKey(event, keysPressed);
 }

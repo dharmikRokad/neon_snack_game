@@ -3,6 +3,7 @@ class AppStrings {
 
   // Control panel
   static const String score = "Score";
+  static const String best = "Best";
   static const String hiScore = "Hi-score";
   static const String play = "Play";
   static const String playWithShortCutKey = "Play (Spacebar)";

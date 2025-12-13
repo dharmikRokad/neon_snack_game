@@ -124,7 +124,7 @@ class CyberpunkTheme {
       pressStart2P.copyWith(fontSize: 10, color: textGray);
 
   static TextStyle get hudScoreValue => pressStart2P.copyWith(
-    fontSize: 20,
+    fontSize: 16,
     color: primary,
     shadows: [
       Shadow(blurRadius: 5, color: primary),

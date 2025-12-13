@@ -13,7 +13,7 @@ class GridBackground extends Component with HasGameReference<SnakeGame> {
 
     final borderPaint = Paint()
       ..color = CyberpunkTheme.primary
-      ..strokeWidth = 5
+      ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
     // Draw Vertical Lines
